@@ -1,0 +1,5 @@
+dependencies:
+
+npm install discord.js express body-parser
+
+npm install discord.js axios
