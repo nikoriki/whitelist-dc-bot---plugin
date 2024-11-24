@@ -31,23 +31,28 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', async (message) => {
-    // Ignore messages from the bot itself and from other channels
+    // Ignore messages from the bot itself
     if (message.author.bot) return;
 
-    // Check if the message is from the correct channel and if the user has already sent a message
-    if (message.channel.id !== INPUT_CHANNEL_ID || usedUserIds.has(message.author.id)) {
+    // Check if the message is in the INPUT channel
+    if (message.channel.id !== INPUT_CHANNEL_ID) return;
+
+    // Check if the user has already sent a message
+    if (usedUserIds.has(message.author.id)) {
         // If the user has already sent a message, send a warning message
         const warningMessage = await message.reply({
-            content: 'You have already whitelisted an username, you cannot whitelist more than one username.',
+            content: 'You have already whitelisted a username. You cannot whitelist more than one username.',
             ephemeral: true
         });
 
         // Wait 0.5 seconds and delete the user's message
         setTimeout(async () => {
-            await message.delete(); // Delete the user's message
-        }, 500); // 500 milliseconds (0.5 seconds)
+            if (message.channel.id === INPUT_CHANNEL_ID) { // Ensure the deletion is only in the INPUT channel
+                await message.delete(); // Delete the user's message
+            }
+        }, 100); // 500 milliseconds (0.5 seconds)
 
-        // Wait 3 seconds and delete the bot's message
+        // Wait 3 seconds and delete the bot's warning message
         setTimeout(async () => {
             await warningMessage.delete(); // Delete the bot's warning message
         }, 3000); // 3000 milliseconds (3 seconds)
