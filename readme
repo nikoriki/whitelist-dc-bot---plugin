@@ -1,3 +1,5 @@
+node.js required
+
 dependencies:
 
 npm install discord.js express body-parser
